@@ -136,6 +136,7 @@ app.get('/', function (req, res) {
 				}
 			}
 		})
+		conn.release()
 	})
 	console.log("dddone")
 	
@@ -163,10 +164,17 @@ api.get('/', function (req, res) {
 						var field = '';
 						for (var key in req.query)
 						{
-							if(key.toUpperCase() !== 'DEVICEID')
+							if(key.toUpperCase() == 'DEVICEID')
+								continue;
+							else if(key.toUpperCase() == 'TM') // 时间字段需特殊处理
+							{
+								field+=('DATE('+key.toUpperCase()+')=');
+								field+=('\''+req.query[key].toUpperCase()+'\' AND ');
+							}
+							else
 							{
 								field+=(key.toUpperCase()+'=');
-								field+=(req.query[key].toUpperCase()+' AND ');
+								field+=('\''+req.query[key].toUpperCase()+'\' AND ');
 							}
 
 						}
